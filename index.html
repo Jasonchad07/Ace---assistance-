@@ -22,19 +22,193 @@
 <div class="foot">ACE · BUILT FOR YOUR MISSION<br>Never share passwords, banking PINs or verification codes with an AI assistant.</div>
 </main>
 <script>
-const $=id=>document.getElementById(id);const log=$('log'),orb=$('orb'),status=$('status'),hint=$('hint');let voiceOn=true,listening=false;
-function add(text,who){const d=document.createElement('div');d.className='msg '+who;d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;}
-function speak(text){if(!voiceOn||!('speechSynthesis'in window))return; speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-GB';u.rate=.91;u.pitch=.78;const voices=speechSynthesis.getVoices();const v=voices.find(x=>/en-GB/i.test(x.lang)&&/male|daniel|george|ryan/i.test(x.name))||voices.find(x=>/en-GB/i.test(x.lang))||voices.find(x=>/^en/i.test(x.lang));if(v)u.voice=v;u.onstart=()=>{orb.classList.add('speaking');status.textContent='● ACE SPEAKING';hint.textContent='One moment. I am responding.'};u.onend=()=>{orb.classList.remove('speaking');status.textContent='● SYSTEM READY';hint.textContent='Your assistant is standing by.'};speechSynthesis.speak(u)}
-function reply(q){const s=q.toLowerCase();let a='Understood. In this prototype I can demonstrate the command flow, but my live AI brain is not connected yet. In our next build we will connect a real AI service so I can research and reason with you.';
-if(s.includes('brief'))a='Good morning. Here is your starter briefing: choose one income project, complete one action that can bring in a customer, follow up with anyone waiting for a reply, and review your spending. Once connected, I will personalise this using your real calendar and tasks.';
-else if(s.includes('business')||s.includes('idea')||s.includes('money')||s.includes('3000')||s.includes('income'))a='Income mission acknowledged. A sensible first target is R3,000 per month in revenue, not guaranteed profit. We should test a low-cost service or digital offer, find real customers, track every expense, and only automate after the offer sells. I can help build the plan; live market research comes when the AI connection is added.';
-else if(s.includes('task')||s.includes('todo')||s.includes('list'))a='Your starter task list: 1. Pick one business offer. 2. Define who would pay for it. 3. Create a simple advert. 4. Contact five potential customers. 5. Record replies and sales. Tell me which task you want to tackle first.';
-else if(s.includes('hello')||s.includes('hi ace')||s.includes('good morning'))a='Hello, brother. ACE is online and ready. Shall we focus on business, your daily plans, or something you need help with?';
-else if(s.includes('time'))a='Your phone can show the current local time. When we connect the live assistant, I can also help schedule your day.';
-add(a,'ace');speak(a)}
-function send(q){q=(q||$('entry').value).trim();if(!q)return;add(q,'you');$('entry').value='';reply(q)}
-$('send').onclick=()=>send();$('entry').addEventListener('keydown',e=>{if(e.key==='Enter')send()});document.querySelectorAll('[data-cmd]').forEach(b=>b.onclick=()=>send(b.dataset.cmd));
-$('voiceToggle').onclick=()=>{voiceOn=!voiceOn;$('voiceToggle').textContent='VOICE: '+(voiceOn?'ON':'OFF');if(!voiceOn&&'speechSynthesis'in window)speechSynthesis.cancel()};
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const mic=$('mic');if(SR){const rec=new SR();rec.lang='en-GB';rec.interimResults=false;rec.maxAlternatives=1;rec.onstart=()=>{listening=true;mic.classList.add('active');mic.textContent='● LISTENING — SPEAK NOW';orb.classList.add('listening');status.textContent='● LISTENING';hint.textContent='I am listening.'};rec.onresult=e=>{const t=e.results[0][0].transcript; $('entry').value=t;send(t)};rec.onerror=e=>{add('Microphone message: '+e.error+'. Check browser microphone permission and try again.','ace')};rec.onend=()=>{listening=false;mic.classList.remove('active');mic.textContent='🎙 TAP TO SPEAK';orb.classList.remove('listening');status.textContent='● SYSTEM READY';hint.textContent='Your assistant is standing by.'};mic.onclick=()=>{if(listening)rec.stop();else{try{rec.start()}catch(e){add('Please wait a moment and try again.','ace')}}};}else{mic.textContent='VOICE INPUT NOT SUPPORTED';mic.disabled=true;mic.onclick=()=>{};}
-if('speechSynthesis'in window)speechSynthesis.getVoices();
+
+const API_URL = "https://ace-brain.jasonchadpillay-07.workers.dev";
+
+const $ = id => document.getElementById(id);
+const log = $('log');
+const orb = $('orb');
+const status = $('status');
+const hint = $('hint');
+
+let voiceOn = true;
+let listening = false;
+
+function add(text, who) {
+  const d = document.createElement('div');
+  d.className = 'msg ' + who;
+  d.textContent = text;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+  return d;
+}
+
+function speak(text) {
+  if (!voiceOn || !('speechSynthesis' in window)) return;
+
+  speechSynthesis.cancel();
+
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-GB';
+  u.rate = 0.91;
+  u.pitch = 0.78;
+
+  const voices = speechSynthesis.getVoices();
+  const v = voices.find(x =>
+    /en-GB/i.test(x.lang) &&
+    /male|daniel|george|ryan/i.test(x.name)
+  ) || voices.find(x => /en-GB/i.test(x.lang));
+
+  if (v) u.voice = v;
+
+  u.onstart = () => {
+    orb.classList.add('speaking');
+    status.textContent = '● ACE SPEAKING';
+    hint.textContent = 'One moment. I am responding.';
+  };
+
+  u.onend = () => {
+    orb.classList.remove('speaking');
+    status.textContent = '● SYSTEM READY';
+    hint.textContent = 'Your assistant is standing by.';
+  };
+
+  speechSynthesis.speak(u);
+}
+
+async function send(q) {
+  q = (q || $('entry').value).trim();
+  if (!q) return;
+
+  add(q, 'you');
+  $('entry').value = '';
+
+  const waiting = add('Thinking... one moment, brother.', 'ace');
+
+  status.textContent = '● ACE THINKING';
+  hint.textContent = 'Connecting to the AI brain...';
+  $('send').disabled = true;
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message: q })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.details || data.error || 'AI connection failed');
+    }
+
+    if (!data.reply) {
+      throw new Error('ACE received an empty response.');
+    }
+
+    waiting.textContent = data.reply;
+    speak(data.reply);
+
+    status.textContent = '● SYSTEM READY';
+    hint.textContent = 'Your assistant is standing by.';
+
+  } catch (error) {
+    waiting.textContent =
+      'Brother, I could not connect to my AI brain. ' +
+      error.message +
+      '. Please try again.';
+
+    status.textContent = '● CONNECTION ISSUE';
+    hint.textContent = 'Please check your connection and try again.';
+
+  } finally {
+    $('send').disabled = false;
+    log.scrollTop = log.scrollHeight;
+  }
+}
+
+$('send').onclick = () => send();
+
+$('entry').addEventListener('keydown', e => {
+  if (e.key === 'Enter') send();
+});
+
+document.querySelectorAll('[data-cmd]').forEach(b => {
+  b.onclick = () => send(b.dataset.cmd);
+});
+
+$('voiceToggle').onclick = () => {
+  voiceOn = !voiceOn;
+  $('voiceToggle').textContent = 'VOICE: ' + (voiceOn ? 'ON' : 'OFF');
+
+  if (!voiceOn && 'speechSynthesis' in window) {
+    speechSynthesis.cancel();
+  }
+};
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const mic = $('mic');
+
+if (SR) {
+  const rec = new SR();
+
+  rec.lang = 'en-GB';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+
+  rec.onstart = () => {
+    listening = true;
+    mic.classList.add('active');
+    mic.textContent = '● LISTENING — SPEAK NOW';
+    orb.classList.add('listening');
+    status.textContent = '● LISTENING';
+    hint.textContent = 'I am listening.';
+  };
+
+  rec.onresult = e => {
+    const transcript = e.results[0][0].transcript;
+    $('entry').value = transcript;
+    send(transcript);
+  };
+
+  rec.onerror = e => {
+    add('Microphone message: ' + e.error +
+      '. Check microphone permission and try again.', 'ace');
+  };
+
+  rec.onend = () => {
+    listening = false;
+    mic.classList.remove('active');
+    mic.textContent = '🎙 TAP TO SPEAK';
+    orb.classList.remove('listening');
+
+    if (status.textContent === '● LISTENING') {
+      status.textContent = '● SYSTEM READY';
+      hint.textContent = 'Your assistant is standing by.';
+    }
+  };
+
+  mic.onclick = () => {
+    if (listening) {
+      rec.stop();
+    } else {
+      try {
+        rec.start();
+      } catch (e) {
+        add('Please wait a moment and try again.', 'ace');
+      }
+    }
+  };
+
+} else {
+  mic.textContent = 'VOICE INPUT NOT SUPPORTED';
+  mic.disabled = true;
+}
+
+if ('speechSynthesis' in window) {
+  speechSynthesis.getVoices();
+}
+
 </script></body></html>
