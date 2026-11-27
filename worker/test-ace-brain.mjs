@@ -1,4 +1,4 @@
-import worker from "./ace-brain.js";
+import worker, { SYSTEM_PROMPT } from "./ace-brain.js";
 
 const SECRET = "AIzaTESTKEY1234567890VALUE";
 const PAGES = "https://jasonchad07.github.io";
@@ -61,6 +61,10 @@ try {
   assert(health.body && health.body.brain === "Gemini", "GET health names Gemini");
   assert(health.cors === PAGES, "GET CORS allows GitHub Pages");
   assert(health.type.includes("application/json"), "GET is JSON");
+  assert(/British gentleman/i.test(SYSTEM_PROMPT), "persona is a British gentleman");
+  assert(/occasionally/i.test(SYSTEM_PROMPT) && /brother/i.test(SYSTEM_PROMPT), "brother is occasional, not required every reply");
+  assert(/passwords/i.test(SYSTEM_PROMPT) && /banking/i.test(SYSTEM_PROMPT), "persona still refuses secrets and banking");
+  assert(/never claim to have sent/i.test(SYSTEM_PROMPT), "persona must not pretend a draft was sent");
 
   const options = await call("OPTIONS", "https://ace.test/");
   assert(options.status === 204, "OPTIONS status");
@@ -135,6 +139,7 @@ try {
   assert(busy.body && busy.body.error && busy.body.details, "busy body has error and details");
   assert(busy.cors === PAGES, "busy response still has CORS");
   assert(!busy.raw.includes(SECRET) && !busy.raw.includes("AIza"), "busy body redacts the key");
+  assert(/gemini-3\.8-flash/.test(busy.body.details || ""), "third fallback is gemini-3.8-flash");
 
   calls.length = 0;
   mockFetch(() => geminiResponse(400, { error: { message: "API key not valid. Please pass a valid API key." } }));

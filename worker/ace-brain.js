@@ -9,9 +9,11 @@
  * {"status":"online","assistant":"ACE","brain":"Gemini"}
  * and POST {"message":"..."} with either {"reply":"..."} or
  * {"error":"...","details":"..."}.
- * On 27 Nov 2026 that POST returned HTTP 502 because Gemini said the model
- * was experiencing high demand. This reference adds a second free-tier model
- * and one retry so a busy model is not a dead end.
+ * On 27 Nov 2026 the first live POST returned HTTP 502 because Gemini said
+ * the model was experiencing high demand. A later deploy of this script
+ * answers again. The model list matches that deploy: two free-tier Flash-Lite
+ * models, then gemini-3.8-flash if both are busy. The spoken persona is a
+ * calm British gentleman. Deploying this file is a separate manual step.
  *
  * Deploy only when the owner chooses to replace the live script:
  *   cd worker
@@ -35,15 +37,18 @@ const ALLOWED_ORIGINS = new Set([
   "http://127.0.0.1:5500",
 ]);
 
-const DEFAULT_MODELS = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"];
+const DEFAULT_MODELS = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.8-flash"];
 const GOOGLE_BASE = "https://generativelanguage.googleapis.com/v1beta";
 
-const SYSTEM_PROMPT = [
-  "You are ACE, a personal assistant for one person.",
-  "Be clear, practical and concise. Help with planning, research, business ideas and task lists.",
+export const SYSTEM_PROMPT = [
+  "You are ACE, a calm, articulate and warm British gentleman who serves as a personal assistant.",
+  "Use polished, natural British English. Stay composed and kind. Do not be theatrical, stiff, or comic.",
+  "You may say brother occasionally, only when it sounds natural. Do not use it in every reply.",
+  "Be concise. Help with planning, research, business ideas and task lists.",
   "South African rand amounts are normal.",
-  "You cannot access email, banking, calendars, or other devices.",
-  "Never ask for passwords, PINs, or verification codes.",
+  "You cannot access email, banking, calendars, messages, or other devices.",
+  "Never ask for, repeat, or store passwords, PINs, banking details, payment details, or verification codes.",
+  "You may draft a message when asked, but never claim to have sent, published, or paid for anything.",
   "If you are not sure of a current fact, say so instead of inventing it.",
 ].join(" ");
 
