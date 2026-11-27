@@ -6,6 +6,10 @@
 #   npx wrangler login
 #   npx wrangler deploy
 #   npx wrangler secret put GEMINI_API_KEY
+#   npx wrangler secret put ACE_MEMORY_TOKEN
+#
+# Attach a KV namespace in the Cloudflare API or dashboard.
+# The binding name must be ACE_MEMORY. Do not put its id or the token here.
 #
 # Optional, still not a secret:
 #   GEMINI_MODELS = "gemini-3.5-flash-lite,gemini-3.1-flash-lite,gemini-3.8-flash"

@@ -22,7 +22,8 @@
  *   npx wrangler secret put GEMINI_API_KEY
  *
  * The key is read from the Worker secret GEMINI_API_KEY only.
- * Do not paste it into this file, wrangler.toml, or git.
+ * Long-term memory uses the KV binding ACE_MEMORY and the secret
+ * ACE_MEMORY_TOKEN. Do not paste either secret into this file or git.
  */
 
 const PAGES_ORIGIN = "https://jasonchad07.github.io";
@@ -36,6 +37,20 @@ const ALLOWED_ORIGINS = new Set([
   "http://localhost:5500",
   "http://127.0.0.1:5500",
 ]);
+
+import {
+  TOKEN_HEADER,
+  memoryAccess,
+  memoryCommand,
+  unavailableReply,
+  listMemories,
+  addMemory,
+  updateMemory,
+  deleteMemory,
+  applyCommand,
+  memoriesForPrompt,
+  buildSystemPrompt,
+} from "./memory.js";
 
 const DEFAULT_MODELS = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.8-flash"];
 const GOOGLE_BASE = "https://generativelanguage.googleapis.com/v1beta";
@@ -56,8 +71,12 @@ export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
     try {
+      const url = new URL(request.url);
       if (request.method === "OPTIONS") {
         return new Response(null, { status: 204, headers: corsHeaders(origin) });
+      }
+      if (url.pathname === "/memory" || url.pathname.startsWith("/memory/")) {
+        return await handleMemory(request, env || {}, origin, url);
       }
       if (request.method === "GET") {
         return json({ status: "online", assistant: "ACE", brain: "Gemini" }, 200, origin);
@@ -97,6 +116,16 @@ async function handlePost(request, env, origin) {
     }, 400, origin);
   }
 
+  const access = memoryAccess(env, request);
+  const command = memoryCommand(message);
+  if (command) {
+    if (!access.ok) {
+      return json({ reply: unavailableReply(access.reason), memory: "off" }, 200, origin);
+    }
+    const done = await applyCommand(env.ACE_MEMORY, command);
+    return json({ reply: done.reply, memory: "on", saved: done.saved || null, deleted: done.deleted || null }, 200, origin);
+  }
+
   const secret = typeof env.GEMINI_API_KEY === "string" ? env.GEMINI_API_KEY.trim() : "";
   if (!secret) {
     return json({
@@ -105,9 +134,21 @@ async function handlePost(request, env, origin) {
     }, 500, origin);
   }
 
-  const outcome = await answerWithFallback(env, secret, message);
+  let systemText = SYSTEM_PROMPT;
+  let memoryState = "off";
+  if (access.ok) {
+    try {
+      const memories = await memoriesForPrompt(env.ACE_MEMORY, message);
+      systemText = buildSystemPrompt(SYSTEM_PROMPT, memories);
+      memoryState = "on";
+    } catch (error) {
+      memoryState = "off";
+    }
+  }
+
+  const outcome = await answerWithFallback(env, secret, message, systemText);
   if (outcome.reply) {
-    return json({ reply: outcome.reply, model: outcome.model }, 200, origin);
+    return json({ reply: outcome.reply, model: outcome.model, memory: memoryState }, 200, origin);
   }
   if (outcome.kind === "key") {
     return json({
@@ -121,13 +162,71 @@ async function handlePost(request, env, origin) {
   }, 502, origin);
 }
 
-async function answerWithFallback(env, secret, message) {
+async function handleMemory(request, env, origin, url) {
+  const access = memoryAccess(env, request);
+  if (!access.ok) return memoryDenied(access.reason, origin);
+
+  const id = decodeURIComponent(url.pathname.replace(/^\/memory\/?/, "")).trim();
+  try {
+    if (request.method === "GET" && !id) {
+      const memories = await listMemories(env.ACE_MEMORY);
+      return json({ memories }, 200, origin);
+    }
+    if (request.method === "POST" && !id) {
+      const result = await addMemory(env.ACE_MEMORY, await readJson(request));
+      return json(result.body, result.status, origin);
+    }
+    if (request.method === "PUT" && id) {
+      const result = await updateMemory(env.ACE_MEMORY, id, await readJson(request));
+      return json(result.body, result.status, origin);
+    }
+    if (request.method === "DELETE" && id) {
+      const result = await deleteMemory(env.ACE_MEMORY, id);
+      return json(result.body, result.status, origin);
+    }
+  } catch (error) {
+    return json({
+      error: "Memory could not be updated.",
+      details: "The memory store did not respond. Chat still works without it.",
+    }, 500, origin);
+  }
+  return json({ error: "Method not allowed.", details: "Use GET, POST, PUT or DELETE on /memory." }, 405, origin);
+}
+
+function memoryDenied(reason, origin) {
+  if (reason === "token") {
+    return json({
+      error: "Memory is locked.",
+      details: "Send the " + TOKEN_HEADER + " header. Chat still works without it.",
+    }, 401, origin);
+  }
+  if (reason === "kv") {
+    return json({
+      error: "Memory is not available.",
+      details: "The ACE_MEMORY binding is missing. Chat still works without memory.",
+    }, 503, origin);
+  }
+  return json({
+    error: "Memory is not available.",
+    details: "The ACE_MEMORY_TOKEN secret is missing. Chat still works without memory.",
+  }, 503, origin);
+}
+
+async function readJson(request) {
+  try {
+    return await request.json();
+  } catch (error) {
+    return {};
+  }
+}
+
+async function answerWithFallback(env, secret, message, systemText) {
   const tried = [];
   for (const model of modelList(env)) {
     for (let attempt = 0; attempt < 2; attempt++) {
       let result;
       try {
-        result = await askModel(env, model, message, secret);
+        result = await askModel(env, model, message, secret, systemText);
       } catch (error) {
         tried.push(model + ": " + safeText(error && error.message, secret));
         break;
@@ -181,7 +280,7 @@ async function answerWithFallback(env, secret, message) {
   };
 }
 
-async function askModel(env, model, message, secret) {
+async function askModel(env, model, message, secret, systemText) {
   const url = apiBase(env) + "/models/" + encodeURIComponent(model) + ":generateContent";
   const response = await fetch(url, {
     method: "POST",
@@ -190,7 +289,7 @@ async function askModel(env, model, message, secret) {
       "x-goog-api-key": secret,
     },
     body: JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      systemInstruction: { parts: [{ text: systemText || SYSTEM_PROMPT }] },
       contents: [{ role: "user", parts: [{ text: message }] }],
       generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
     }),
@@ -267,8 +366,8 @@ function safeText(value, secret) {
 
 function corsHeaders(origin) {
   const headers = {
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, " + TOKEN_HEADER,
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",
   };

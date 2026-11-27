@@ -19,7 +19,7 @@ On 27 November 2026 the live worker was healthy:
 
 The reference script tries `gemini-3.5-flash-lite`, then `gemini-3.1-flash-lite`, then `gemini-3.8-flash`. That third name matches the extra fallback already added on the live worker. The first model answered the live test, so the third one was not needed that time.
 
-There is no login on the worker. Anyone who can reach that public address can spend the free Gemini allowance. There is no memory store, no calendar, no notification sender, and no control of other apps.
+There is no login on the chat itself. Anyone who can reach that public address can spend the free Gemini allowance. Calendar, notifications and control of other apps are still not connected. Long-term memory is in this branch and is described below. It stays off until the owner deploys the script with a KV binding and a memory token.
 
 ## Bugs and limitations found
 
@@ -30,7 +30,7 @@ There is no login on the worker. Anyone who can reach that public address can sp
 - The microphone needs a tap. There is no "Hey ACE", and the page cannot keep listening with the screen off.
 - Quick commands send immediately. There is no approval step yet, because those four commands only ask for advice.
 - There is no emergency stop beyond turning voice off or leaving the page.
-- There is no memory. Nothing is kept between visits except the chosen voice in this browser's local storage, and whether the page was installed.
+- Memory does not survive on the live brain until this upgrade is deployed with the `ACE_MEMORY` binding and the `ACE_MEMORY_TOKEN` secret. Until then, nothing about Callum is kept between visits except the chosen voice and, once saved, the memory token in this browser.
 - Device control, banking, messages and social apps are not connected. The page says so.
 - A copy of the page opened as a file on a computer cannot call the brain. The live worker only accepts the GitHub Pages address and a few local test addresses.
 - The published site address is a project page, `.../Ace---assistance-/`, not the root of `jasonchad07.github.io`. The installable app has to live in that folder.
@@ -99,7 +99,29 @@ Hard stops, in the brain and in any future phone code:
 - Memory, when it exists, must be readable, editable and deletable, and must refuse credentials. Local storage of the chosen voice is not memory of the owner's life.
 - The public worker should eventually have a simple shared secret or other check so strangers cannot drain the free Gemini allowance. That check must not be committed as a real key.
 
-The gentleman prompt in this branch already says not to ask for secrets and not to pretend a draft was sent. That only takes effect after the worker is deployed.
+The gentleman prompt says not to ask for secrets and not to pretend a draft was sent. The owner reported that script was deployed on 27 November 2026 at 21:34. This memory upgrade is a further deploy.
+
+## Long-term memory
+
+Memory lives in Cloudflare KV, binding name `ACE_MEMORY`. The worker reads and writes `env.ACE_MEMORY`. If that binding is missing, chat still answers and simply does not remember anything.
+
+The public address cannot read or change memory without a header. The header is `X-ACE-Memory-Token`. The worker compares it with the secret `ACE_MEMORY_TOKEN`. A missing or wrong token does not break chat. It only turns memory off. The phone stores the token in local storage under `ace.memoryToken` after it is typed into the Memory panel. The token is not in the website code and is not a Gemini key.
+
+The first time a correct token is used, ACE stores a small approved set: Callum Pillay's name, the British voice preference, the Galaxy A53, Project ACE, the R3000 planning goal, and the rule that secrets are not stored. After that, memories change only when Callum says "remember ..." or "forget ...", or uses the panel to add, edit or delete one. Passwords, PINs, bank accounts, card numbers and API keys are refused.
+
+On every chat, the name, preferences and project notes are added to the Gemini system prompt, plus notes that match the question. Closing the page does not clear KV.
+
+Routes, all on `https://ace-brain.jasonchadpillay-07.workers.dev`, with header `X-ACE-Memory-Token`:
+
+- `GET /memory` returns `{ "memories": [ { "id", "kind", "text", "createdAt", "updatedAt" } ] }`.
+- `POST /memory` with `{ "text": "...", "kind": "note" }` returns `201` and `{ "memory": { ... } }`. `kind` may be `name`, `preference`, `project` or `note`. It defaults to `note`.
+- `PUT /memory/<id>` with `{ "text": "..." }` returns `{ "memory": { ... } }`.
+- `DELETE /memory/<id>` returns `{ "deleted": true, "id": "..." }`.
+- `POST /` with `{ "message": "remember that ..." }` or `{ "message": "forget ..." }` still returns `{ "reply", "memory" }`. `memory` is `"on"` or `"off"`.
+
+A wrong token on the memory routes returns `401` `{ "error": "Memory is locked.", "details": "..." }`. A missing binding or missing token secret returns `503` with a plain explanation. A refused secret returns `400` `{ "error": "That cannot be remembered.", "details": "..." }`.
+
+Browser calls are allowed from `https://jasonchad07.github.io`. Local test addresses remain allowed so the page can be tried on this computer. Other websites are not.
 
 ## Phased roadmap
 
@@ -108,11 +130,11 @@ The gentleman prompt in this branch already says not to ask for secrets and not 
 3. Voice. Started here: clean the words before they are spoken, prefer a British male voice, remember the owner's choice, and put the gentleman persona back in the script that will be deployed later. Cloud speech is not started.
 4. Android. Started only as far as a home-screen install. Notifications, reminders, and controlled app opening are not built.
 5. "Hey ACE". Not started. It needs the companion app and a foreground microphone service. It will not work as a website feature.
-6. Memory and autonomy. Not started. No database, no scheduled tasks, no approval screen, no emergency stop yet.
+6. Memory and autonomy. Memory is implemented in this branch: KV, a token, a panel, and remember or forget. Scheduled tasks, an approval screen and an emergency stop are still not built.
 
 ## Blockers only the owner can clear
 
-- Deploy `worker/ace-brain.js` after approving it. Merging the website pull request does not do this. Do not replace `GEMINI_API_KEY` if it is already set. This work did not read or change that secret.
+- Deploy `worker/ace-brain.js` with the existing `GEMINI_API_KEY` left in place. Create the KV namespace, attach it as the binding `ACE_MEMORY`, and set the secret `ACE_MEMORY_TOKEN`. Do not put that token in git. Merging the website does not do the Cloudflare deploy.
 - On the Galaxy A53, open the published site in Chrome after the website changes are merged, allow the microphone, and use Add to Home screen. Confirm the voice menu lists a British male voice and that speech is understandable.
 - Decide whether the phone voice is good enough before anyone creates a Cloud speech key.
 - For a later companion app: install the app himself, grant microphone and notification permission, and accept that listening after a reboot means opening ACE once. An accessibility service, if it is ever used, needs a separate explicit yes and must exclude banking apps.
@@ -122,5 +144,6 @@ The gentleman prompt in this branch already says not to ask for secrets and not 
 
 - `js/speech.js` cleans markdown out of the spoken text only. Tests are in `js/test-speech.mjs`.
 - The page prefers a British male voice, with a menu that remembers the choice in local storage.
-- `worker/ace-brain.js` restores the calm British gentleman, uses "brother" only occasionally, and keeps `gemini-3.8-flash` as the third model so a later deploy does not drop it.
+- `worker/ace-brain.js` keeps the calm British gentleman, the three Gemini models, and `GEMINI_API_KEY`. It adds KV memory behind `ACE_MEMORY_TOKEN`.
+- The page has a Memory panel. The token is typed once and kept in local storage on that phone.
 - `manifest.webmanifest`, `sw.js` and `icons/` make the site installable. The service worker does not cache the brain, and it tries the network before the saved copy so an update is not stuck on the phone.
