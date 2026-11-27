@@ -5,7 +5,7 @@
 <title>ACE — Personal AI</title>
 <style>
 :root{--bg:#06101d;--panel:#0c1b2b;--line:#17344b;--cyan:#50d9ff;--blue:#168dca;--muted:#8aa7ba;--white:#eaf8ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 5%,#103653 0,#071421 42%,#040a12 100%);color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}.wrap{max-width:620px;margin:auto;padding:env(safe-area-inset-top) 16px calc(22px + env(safe-area-inset-bottom))}.top{display:flex;justify-content:space-between;align-items:center;padding:18px 2px 10px}.brand{letter-spacing:5px;font-size:22px;font-weight:800;color:#c9f4ff}.sub{font-size:10px;color:var(--muted);letter-spacing:2px}.status{font-size:11px;color:#8fffd0;border:1px solid #1d695c;border-radius:30px;padding:6px 10px}.hero{text-align:center;padding:22px 0 18px}.orb{width:184px;height:184px;margin:8px auto 18px;border-radius:50%;position:relative;display:grid;place-items:center;background:radial-gradient(circle,#164b6b 0,#0c2b43 38%,#071827 67%,transparent 69%);box-shadow:0 0 25px #1a9ed455,inset 0 0 25px #41d6ff33}.orb:before,.orb:after{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid #42cfff99;box-shadow:0 0 18px #2bcaff55;animation:spin 12s linear infinite}.orb:after{inset:17px;border-style:dashed;border-color:#42cfff66;animation-direction:reverse;animation-duration:18s}.core{width:76px;height:76px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c7faff,#3ac8f4 28%,#0872ac 65%,#04263f);box-shadow:0 0 35px #27bfffaa,0 0 70px #1699d455;z-index:1}.orb.listening{animation:pulse 1s infinite}.orb.speaking .core{box-shadow:0 0 55px #70eaff,0 0 100px #1699d4}
-@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{filter:brightness(1.5);transform:scale(1.035)}}h1{font-size:25px;margin:0 0 5px;letter-spacing:1px}.hint{color:var(--muted);font-size:13px}.panel{background:linear-gradient(145deg,#102438dd,#081725ee);border:1px solid var(--line);border-radius:18px;padding:15px;margin:14px 0;box-shadow:0 10px 30px #0003}.panelhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.label{font-size:11px;letter-spacing:1.7px;color:#83cce7}.small{font-size:11px;color:var(--muted)}#log{height:180px;overflow:auto;display:flex;flex-direction:column;gap:9px}.msg{padding:10px 12px;border-radius:12px;max-width:90%;font-size:13px;line-height:1.45;white-space:pre-wrap}.ace{align-self:flex-start;background:#102e43;border:1px solid #1c5672}.you{align-self:flex-end;background:#123d58;border:1px solid #26759b}.controls{display:flex;gap:8px}.controls input{min-width:0;flex:1;background:#06121f;border:1px solid #20445b;border-radius:12px;padding:13px;color:white;font-size:14px;outline:none}.btn{border:1px solid #247da3;background:linear-gradient(135deg,#12628b,#0d3e60);color:white;border-radius:12px;padding:12px 14px;font-weight:650}.mic{width:100%;margin-top:10px;padding:14px;border-radius:14px;font-size:14px;letter-spacing:.5px}.mic.active{background:linear-gradient(135deg,#9b343f,#5d1e2d);border-color:#e66b78}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tile{background:#0a1c2c;border:1px solid #18384e;border-radius:13px;padding:13px;text-align:left;color:var(--white);min-height:75px}.tile b{display:block;font-size:13px;margin-bottom:4px}.tile span{font-size:11px;color:var(--muted)}.tile:active,.btn:active{transform:scale(.98)}.foot{text-align:center;color:#6e8da2;font-size:10px;line-height:1.5;padding:12px}.notice{font-size:11px;color:#9ab6c8;line-height:1.5}.toggle{background:transparent;border:1px solid #25485d;color:#a9d8e9;border-radius:20px;padding:5px 9px;font-size:11px}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{filter:brightness(1.5);transform:scale(1.035)}}h1{font-size:25px;margin:0 0 5px;letter-spacing:1px}.hint{color:var(--muted);font-size:13px}.panel{background:linear-gradient(145deg,#102438dd,#081725ee);border:1px solid var(--line);border-radius:18px;padding:15px;margin:14px 0;box-shadow:0 10px 30px #0003}.panelhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.label{font-size:11px;letter-spacing:1.7px;color:#83cce7}.small{font-size:11px;color:var(--muted)}#log{height:180px;overflow:auto;display:flex;flex-direction:column;gap:9px}.msg{padding:10px 12px;border-radius:12px;max-width:90%;font-size:13px;line-height:1.45;white-space:pre-wrap}.ace{align-self:flex-start;background:#102e43;border:1px solid #1c5672}.you{align-self:flex-end;background:#123d58;border:1px solid #26759b}.problem{align-self:flex-start;background:#3a1c24;border:1px solid #8a4450}.controls{display:flex;gap:8px}.controls input{min-width:0;flex:1;background:#06121f;border:1px solid #20445b;border-radius:12px;padding:13px;color:white;font-size:14px;outline:none}.btn{border:1px solid #247da3;background:linear-gradient(135deg,#12628b,#0d3e60);color:white;border-radius:12px;padding:12px 14px;font-weight:650}.mic{width:100%;margin-top:10px;padding:14px;border-radius:14px;font-size:14px;letter-spacing:.5px}.mic.active{background:linear-gradient(135deg,#9b343f,#5d1e2d);border-color:#e66b78}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tile{background:#0a1c2c;border:1px solid #18384e;border-radius:13px;padding:13px;text-align:left;color:var(--white);min-height:75px}.tile b{display:block;font-size:13px;margin-bottom:4px}.tile span{font-size:11px;color:var(--muted)}.tile:active,.btn:active{transform:scale(.98)}.foot{text-align:center;color:#6e8da2;font-size:10px;line-height:1.5;padding:12px}.notice{font-size:11px;color:#9ab6c8;line-height:1.5}.toggle{background:transparent;border:1px solid #25485d;color:#a9d8e9;border-radius:20px;padding:5px 9px;font-size:11px}
 </style></head>
 <body><main class="wrap">
 <header class="top"><div><div class="brand">A C E</div><div class="sub">PERSONAL AI SYSTEM · V1.0</div></div><div class="status" id="status">● SYSTEM READY</div></header>
@@ -17,13 +17,32 @@
 <button class="tile" data-cmd="Help me make R3000 a month"><b>◇ R3,000 mission</b><span>Build an income plan</span></button>
 <button class="tile" data-cmd="Create a to-do list"><b>▤ My task list</b><span>Organise your work</span></button>
 </div></section>
-<section class="panel"><div class="panelhead"><span class="label">SYSTEM MODULES</span><span class="small">PROTOTYPE</span></div><div class="grid"><div class="tile"><b>🧠 AI brain</b><span>Demo responses only — connection next</span></div><div class="tile"><b>🎙 Voice interface</b><span>Uses your browser's speech services</span></div><div class="tile"><b>📈 Business desk</b><span>Planning and workflow concepts</span></div><div class="tile"><b>📱 Device control</b><span>Not connected yet</span></div></div></section>
-<div class="panel notice"><b>Prototype note:</b> This first build runs locally in your browser. Voice recognition and spoken replies depend on Samsung Internet/Chrome and available device voices. It does not yet connect to a live AI model, access your accounts, or control other apps. We'll add those safely in the next build.</div>
+<section class="panel"><div class="panelhead"><span class="label">SYSTEM MODULES</span><span class="small">PROTOTYPE</span></div><div class="grid"><div class="tile"><b>🧠 AI brain</b><span>Live Gemini connection via Cloudflare</span></div><div class="tile"><b>🎙 Voice interface</b><span>Uses your browser's speech services</span></div><div class="tile"><b>📈 Business desk</b><span>Planning and workflow concepts</span></div><div class="tile"><b>📱 Device control</b><span>Not connected yet</span></div></div></section>
+<div class="panel notice"><b>How this works:</b> Commands go to ACE's brain, a Cloudflare service that calls Google Gemini. Voice recognition and spoken replies still use Samsung Internet or Chrome on this device. ACE does not access your accounts or control other apps. If the brain is busy or cannot answer, the conversation explains why.</div>
 <div class="foot">ACE · BUILT FOR YOUR MISSION<br>Never share passwords, banking PINs or verification codes with an AI assistant.</div>
 </main>
 <script>
 
-const API_URL = "https://ace-brain.jasonchadpillay-07.workers.dev";
+const LIVE_API = "https://ace-brain.jasonchadpillay-07.workers.dev";
+
+// The public site always uses the live Worker. A ?api= override is only
+// honoured on localhost so a local mock can be tested without sending
+// commands from the published site to some other address.
+function resolveApiUrl() {
+  const local = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+  if (!local) return LIVE_API;
+  const override = new URLSearchParams(location.search).get("api");
+  if (!override) return LIVE_API;
+  try {
+    const url = new URL(override);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return LIVE_API;
+    return url.href.replace(/\/$/, "");
+  } catch (e) {
+    return LIVE_API;
+  }
+}
+
+const API_URL = resolveApiUrl();
 
 const $ = id => document.getElementById(id);
 const log = $('log');
@@ -43,7 +62,7 @@ function add(text, who) {
   return d;
 }
 
-function speak(text) {
+function speak(text, after) {
   if (!voiceOn || !('speechSynthesis' in window)) return;
 
   speechSynthesis.cancel();
@@ -69,11 +88,76 @@ function speak(text) {
 
   u.onend = () => {
     orb.classList.remove('speaking');
-    status.textContent = '● SYSTEM READY';
-    hint.textContent = 'Your assistant is standing by.';
+    status.textContent = after ? after.status : '● SYSTEM READY';
+    hint.textContent = after ? after.hint : 'Your assistant is standing by.';
   };
 
   speechSynthesis.speak(u);
+}
+
+async function callBrain(q) {
+  const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message: q })
+  });
+
+  const raw = await response.text();
+  let data = {};
+
+  if (raw) {
+    try {
+      data = JSON.parse(raw);
+    } catch (e) {
+      data = {
+        error: 'ACE received a reply that was not readable.',
+        details: raw.replace(/\s+/g, ' ').slice(0, 180)
+      };
+    }
+  }
+
+  return { ok: response.ok, status: response.status, data };
+}
+
+function isBusy(result) {
+  const detail = String((result.data && (result.data.details || result.data.error)) || '').toLowerCase();
+  if (/high demand|unavailable|overloaded|try again later|resource exhausted/.test(detail)) return true;
+  return result.status === 429 || result.status === 503;
+}
+
+function failureText(error, result) {
+  if (!result) {
+    if (location.protocol === 'file:') {
+      return 'This page was opened from a file on your computer, so the browser will not call ACE\'s brain. Open the GitHub Pages site instead.';
+    }
+    const msg = error && error.message ? error.message : 'network error';
+    if (/failed to fetch|networkerror|load failed/i.test(msg)) {
+      return 'The browser could not read a reply from ACE\'s brain. Check your internet connection. If you opened a copy on this computer, use the GitHub Pages site. The live brain only accepts that address.';
+    }
+    return 'ACE could not finish that request. ' + msg;
+  }
+
+  const detail = (result.data && (result.data.details || result.data.error)) || '';
+  if (isBusy(result)) {
+    return 'ACE reached Google Gemini, but the model is too busy to answer right now. ' + (detail || 'Wait a moment and try again.');
+  }
+  if (result.status === 400) {
+    return detail || 'ACE needs a short command before it can answer.';
+  }
+  return detail || ('ACE\'s brain returned an error (code ' + result.status + '). Please try again.');
+}
+
+function showProblem(bubble, text) {
+  bubble.className = 'msg problem';
+  bubble.textContent = text;
+  status.textContent = '● CONNECTION ISSUE';
+  hint.textContent = 'The reason is in the conversation above.';
+  speak(text, {
+    status: '● CONNECTION ISSUE',
+    hint: 'The reason is in the conversation above.'
+  });
 }
 
 async function send(q) {
@@ -90,38 +174,33 @@ async function send(q) {
   $('send').disabled = true;
 
   try {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ message: q })
-    });
+    let result = await callBrain(q);
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.details || data.error || 'AI connection failed');
+    if (!result.ok && isBusy(result)) {
+      waiting.textContent = 'The AI service is busy. Trying once more...';
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      result = await callBrain(q);
     }
 
-    if (!data.reply) {
-      throw new Error('ACE received an empty response.');
+    if (!result.ok) {
+      showProblem(waiting, failureText(null, result));
+      return;
     }
 
-    waiting.textContent = data.reply;
-    speak(data.reply);
+    if (!result.data.reply) {
+      showProblem(waiting, 'ACE received an empty response. Please try again.');
+      return;
+    }
+
+    waiting.className = 'msg ace';
+    waiting.textContent = result.data.reply;
+    speak(result.data.reply);
 
     status.textContent = '● SYSTEM READY';
     hint.textContent = 'Your assistant is standing by.';
 
   } catch (error) {
-    waiting.textContent =
-      'Brother, I could not connect to my AI brain. ' +
-      error.message +
-      '. Please try again.';
-
-    status.textContent = '● CONNECTION ISSUE';
-    hint.textContent = 'Please check your connection and try again.';
+    showProblem(waiting, failureText(error, null));
 
   } finally {
     $('send').disabled = false;

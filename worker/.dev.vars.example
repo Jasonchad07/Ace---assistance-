@@ -1,0 +1,4 @@
+# Copy to worker/.dev.vars for local wrangler dev only.
+# .dev.vars is gitignored. Never commit a real key.
+GEMINI_API_KEY=paste-a-google-ai-studio-key-here
+GEMINI_RETRY_MS=0

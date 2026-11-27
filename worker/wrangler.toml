@@ -1,0 +1,18 @@
+# REFERENCE CONFIG — not deployed by this repository.
+# The live Worker name is ace-brain. Deploying this replaces that script.
+# Do not put API keys in this file.
+#
+#   cd worker
+#   npx wrangler login
+#   npx wrangler deploy
+#   npx wrangler secret put GEMINI_API_KEY
+#
+# Optional, still not a secret:
+#   GEMINI_MODELS = "gemini-3.5-flash-lite,gemini-3.1-flash-lite"
+
+name = "ace-brain"
+main = "ace-brain.js"
+compatibility_date = "2025-11-18"
+
+[dev]
+port = 8787
