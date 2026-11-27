@@ -2,15 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07111f">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ACE">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/ace-192.png"><link rel="apple-touch-icon" href="icons/ace-192.png">
 <title>ACE — Personal AI</title>
 <style>
 :root{--bg:#06101d;--panel:#0c1b2b;--line:#17344b;--cyan:#50d9ff;--blue:#168dca;--muted:#8aa7ba;--white:#eaf8ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 5%,#103653 0,#071421 42%,#040a12 100%);color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}.wrap{max-width:620px;margin:auto;padding:env(safe-area-inset-top) 16px calc(22px + env(safe-area-inset-bottom))}.top{display:flex;justify-content:space-between;align-items:center;padding:18px 2px 10px}.brand{letter-spacing:5px;font-size:22px;font-weight:800;color:#c9f4ff}.sub{font-size:10px;color:var(--muted);letter-spacing:2px}.status{font-size:11px;color:#8fffd0;border:1px solid #1d695c;border-radius:30px;padding:6px 10px}.hero{text-align:center;padding:22px 0 18px}.orb{width:184px;height:184px;margin:8px auto 18px;border-radius:50%;position:relative;display:grid;place-items:center;background:radial-gradient(circle,#164b6b 0,#0c2b43 38%,#071827 67%,transparent 69%);box-shadow:0 0 25px #1a9ed455,inset 0 0 25px #41d6ff33}.orb:before,.orb:after{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid #42cfff99;box-shadow:0 0 18px #2bcaff55;animation:spin 12s linear infinite}.orb:after{inset:17px;border-style:dashed;border-color:#42cfff66;animation-direction:reverse;animation-duration:18s}.core{width:76px;height:76px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c7faff,#3ac8f4 28%,#0872ac 65%,#04263f);box-shadow:0 0 35px #27bfffaa,0 0 70px #1699d455;z-index:1}.orb.listening{animation:pulse 1s infinite}.orb.speaking .core{box-shadow:0 0 55px #70eaff,0 0 100px #1699d4}
-@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{filter:brightness(1.5);transform:scale(1.035)}}h1{font-size:25px;margin:0 0 5px;letter-spacing:1px}.hint{color:var(--muted);font-size:13px}.panel{background:linear-gradient(145deg,#102438dd,#081725ee);border:1px solid var(--line);border-radius:18px;padding:15px;margin:14px 0;box-shadow:0 10px 30px #0003}.panelhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.label{font-size:11px;letter-spacing:1.7px;color:#83cce7}.small{font-size:11px;color:var(--muted)}#log{height:180px;overflow:auto;display:flex;flex-direction:column;gap:9px}.msg{padding:10px 12px;border-radius:12px;max-width:90%;font-size:13px;line-height:1.45;white-space:pre-wrap}.ace{align-self:flex-start;background:#102e43;border:1px solid #1c5672}.you{align-self:flex-end;background:#123d58;border:1px solid #26759b}.problem{align-self:flex-start;background:#3a1c24;border:1px solid #8a4450}.controls{display:flex;gap:8px}.controls input{min-width:0;flex:1;background:#06121f;border:1px solid #20445b;border-radius:12px;padding:13px;color:white;font-size:14px;outline:none}.btn{border:1px solid #247da3;background:linear-gradient(135deg,#12628b,#0d3e60);color:white;border-radius:12px;padding:12px 14px;font-weight:650}.mic{width:100%;margin-top:10px;padding:14px;border-radius:14px;font-size:14px;letter-spacing:.5px}.mic.active{background:linear-gradient(135deg,#9b343f,#5d1e2d);border-color:#e66b78}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tile{background:#0a1c2c;border:1px solid #18384e;border-radius:13px;padding:13px;text-align:left;color:var(--white);min-height:75px}.tile b{display:block;font-size:13px;margin-bottom:4px}.tile span{font-size:11px;color:var(--muted)}.tile:active,.btn:active{transform:scale(.98)}.foot{text-align:center;color:#6e8da2;font-size:10px;line-height:1.5;padding:12px}.notice{font-size:11px;color:#9ab6c8;line-height:1.5}.toggle{background:transparent;border:1px solid #25485d;color:#a9d8e9;border-radius:20px;padding:5px 9px;font-size:11px}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{filter:brightness(1.5);transform:scale(1.035)}}h1{font-size:25px;margin:0 0 5px;letter-spacing:1px}.hint{color:var(--muted);font-size:13px}.panel{background:linear-gradient(145deg,#102438dd,#081725ee);border:1px solid var(--line);border-radius:18px;padding:15px;margin:14px 0;box-shadow:0 10px 30px #0003}.panelhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.label{font-size:11px;letter-spacing:1.7px;color:#83cce7}.small{font-size:11px;color:var(--muted)}#log{height:180px;overflow:auto;display:flex;flex-direction:column;gap:9px}.msg{padding:10px 12px;border-radius:12px;max-width:90%;font-size:13px;line-height:1.45;white-space:pre-wrap}.ace{align-self:flex-start;background:#102e43;border:1px solid #1c5672}.you{align-self:flex-end;background:#123d58;border:1px solid #26759b}.problem{align-self:flex-start;background:#3a1c24;border:1px solid #8a4450}.controls{display:flex;gap:8px}.controls input{min-width:0;flex:1;background:#06121f;border:1px solid #20445b;border-radius:12px;padding:13px;color:white;font-size:14px;outline:none}.btn{border:1px solid #247da3;background:linear-gradient(135deg,#12628b,#0d3e60);color:white;border-radius:12px;padding:12px 14px;font-weight:650}.mic{width:100%;margin-top:10px;padding:14px;border-radius:14px;font-size:14px;letter-spacing:.5px}.mic.active{background:linear-gradient(135deg,#9b343f,#5d1e2d);border-color:#e66b78}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.tile{background:#0a1c2c;border:1px solid #18384e;border-radius:13px;padding:13px;text-align:left;color:var(--white);min-height:75px}.tile b{display:block;font-size:13px;margin-bottom:4px}.tile span{font-size:11px;color:var(--muted)}.tile:active,.btn:active{transform:scale(.98)}.foot{text-align:center;color:#6e8da2;font-size:10px;line-height:1.5;padding:12px}.notice{font-size:11px;color:#9ab6c8;line-height:1.5}.toggle{background:transparent;border:1px solid #25485d;color:#a9d8e9;border-radius:20px;padding:5px 9px;font-size:11px}.voice-row{display:flex;gap:8px;align-items:center;margin-top:10px}.voice-row label{font-size:11px;letter-spacing:1px;color:#83cce7;white-space:nowrap}.voice-row select{flex:1;min-width:0;background:#06121f;color:white;border:1px solid #20445b;border-radius:12px;padding:10px;font-size:13px}
 </style></head>
 <body><main class="wrap">
 <header class="top"><div><div class="brand">A C E</div><div class="sub">PERSONAL AI SYSTEM · V1.0</div></div><div class="status" id="status">● SYSTEM READY</div></header>
 <section class="hero"><div class="orb" id="orb"><div class="core"></div></div><h1>At your service.</h1><div class="hint" id="hint">Your assistant is standing by, brother.</div></section>
-<section class="panel"><div class="panelhead"><span class="label">COMMAND CHANNEL</span><button class="toggle" id="voiceToggle">VOICE: ON</button></div><div id="log" aria-live="polite"><div class="msg ace">Good day. ACE systems are online. I'm ready to help you plan, research and build. What shall we work on?</div></div><div class="controls"><input id="entry" placeholder="Give ACE a command…" autocomplete="off"><button class="btn" id="send">SEND</button></div><button class="btn mic" id="mic">🎙 TAP TO SPEAK</button></section>
+<section class="panel"><div class="panelhead"><span class="label">COMMAND CHANNEL</span><button class="toggle" id="voiceToggle">VOICE: ON</button></div><div id="log" aria-live="polite"><div class="msg ace">Good day. ACE systems are online. I'm ready to help you plan, research and build. What shall we work on?</div></div><div class="controls"><input id="entry" placeholder="Give ACE a command…" autocomplete="off"><button class="btn" id="send">SEND</button></div><button class="btn mic" id="mic">🎙 TAP TO SPEAK</button><div class="voice-row"><label for="voicePick">SPOKEN VOICE</label><select id="voicePick" aria-label="Spoken voice"></select></div></section>
 <section class="panel"><div class="panelhead"><span class="label">QUICK COMMANDS</span><span class="small">TAP TO TEST</span></div><div class="grid">
 <button class="tile" data-cmd="Give me my daily briefing"><b>◈ Daily briefing</b><span>Plan today's priorities</span></button>
 <button class="tile" data-cmd="Find me a business idea"><b>◉ Business ideas</b><span>Explore income opportunities</span></button>
@@ -21,6 +24,7 @@
 <div class="panel notice"><b>How this works:</b> Commands go to ACE's brain, a Cloudflare service that calls Google Gemini. Voice recognition and spoken replies still use Samsung Internet or Chrome on this device. ACE does not access your accounts or control other apps. If the brain is busy or cannot answer, the conversation explains why.</div>
 <div class="foot">ACE · BUILT FOR YOUR MISSION<br>Never share passwords, banking PINs or verification codes with an AI assistant.</div>
 </main>
+<script type="module" src="js/speech.js"></script>
 <script>
 
 const LIVE_API = "https://ace-brain.jasonchadpillay-07.workers.dev";
@@ -62,21 +66,34 @@ function add(text, who) {
   return d;
 }
 
+function speechApi() {
+  return window.ACE_SPEECH || null;
+}
+
+function readVoiceChoice() {
+  try {
+    return localStorage.getItem('ace.voice') || '';
+  } catch (e) {
+    return '';
+  }
+}
+
 function speak(text, after) {
   if (!voiceOn || !('speechSynthesis' in window)) return;
 
+  const api = speechApi();
+  const spoken = api ? api.cleanSpeechText(text) : String(text || '');
+  if (!spoken) return;
+
   speechSynthesis.cancel();
 
-  const u = new SpeechSynthesisUtterance(text);
+  const u = new SpeechSynthesisUtterance(spoken);
   u.lang = 'en-GB';
-  u.rate = 0.91;
-  u.pitch = 0.78;
+  u.rate = api ? api.rate : 0.94;
+  u.pitch = api ? api.pitch : 0.86;
 
   const voices = speechSynthesis.getVoices();
-  const v = voices.find(x =>
-    /en-GB/i.test(x.lang) &&
-    /male|daniel|george|ryan/i.test(x.name)
-  ) || voices.find(x => /en-GB/i.test(x.lang));
+  const v = api ? api.pickVoice(voices, readVoiceChoice()) : null;
 
   if (v) u.voice = v;
 
@@ -286,8 +303,51 @@ if (SR) {
   mic.disabled = true;
 }
 
+function fillVoices() {
+  const sel = $('voicePick');
+  const api = speechApi();
+  if (!sel || !api || !('speechSynthesis' in window)) return;
+
+  const voices = api.orderVoices(speechSynthesis.getVoices());
+  const saved = readVoiceChoice();
+  const previous = sel.value;
+  sel.innerHTML = '';
+
+  const auto = document.createElement('option');
+  auto.value = '';
+  auto.textContent = 'Automatic British male';
+  sel.appendChild(auto);
+
+  voices.forEach(voice => {
+    const opt = document.createElement('option');
+    opt.value = voice.voiceURI;
+    opt.textContent = voice.name + ' (' + voice.lang + ')';
+    sel.appendChild(opt);
+  });
+
+  const wanted = saved || previous;
+  sel.value = [...sel.options].some(opt => opt.value === wanted) ? wanted : '';
+}
+
+if ($('voicePick')) {
+  $('voicePick').onchange = () => {
+    try {
+      localStorage.setItem('ace.voice', $('voicePick').value);
+    } catch (e) {}
+    if (voiceOn) speak('ACE at your service.');
+  };
+}
+
+window.addEventListener('ace-speech-ready', fillVoices);
+
 if ('speechSynthesis' in window) {
   speechSynthesis.getVoices();
+  speechSynthesis.addEventListener('voiceschanged', fillVoices);
+  fillVoices();
+}
+
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
 </script></body></html>

@@ -1,0 +1,30 @@
+{
+  "name": "ACE — Personal AI",
+  "short_name": "ACE",
+  "description": "ACE, a personal assistant you can open from your home screen.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#06101d",
+  "theme_color": "#07111f",
+  "icons": [
+    {
+      "src": "icons/ace-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/ace-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/ace-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
